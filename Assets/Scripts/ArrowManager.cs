@@ -30,7 +30,7 @@ public class ArrowManager : MonoBehaviour
         arrowObj.name = arrowType.ToString();
 
         var arrow = arrowObj.GetComponent<Arrow>();
-        arrow.ArrowType = arrowType;
+        arrow.ArrowType.Value = arrowType;
 
         var arrowPosX = arrowType == Arrow.Type.Left ? 0f : 1f;
         var arrowPosition = new Vector3(arrowPosX, -_arrows.Count - (_arrows.Count/4), 0);
@@ -41,29 +41,29 @@ public class ArrowManager : MonoBehaviour
         var count = _arrows.Count;
         if (count % 4 == 0)
         {
-            if (_arrows[count - 4].ArrowType == Arrow.Type.Left &&
-                _arrows[count - 3].ArrowType == Arrow.Type.Right &&
-                _arrows[count - 2].ArrowType == Arrow.Type.Right &&
-                _arrows[count - 1].ArrowType == Arrow.Type.Left)
+            if (_arrows[count - 4].ArrowType.Value == Arrow.Type.Left &&
+                _arrows[count - 3].ArrowType.Value == Arrow.Type.Right &&
+                _arrows[count - 2].ArrowType.Value == Arrow.Type.Right &&
+                _arrows[count - 1].ArrowType.Value == Arrow.Type.Left)
             {
                 if(NextArrowManager == null)
                     GenerateNextArrowManager();
                 for (var i = 1; i <= 4; i++)
                 {
-                    _arrows[count - i].GetComponentInChildren<Renderer>().material.color = Color.green;
+                    SetColorChildrenObjects(_arrows[count - i].gameObject, Color.green);
                 }
                 NextArrowManager.Generate(Arrow.Type.Left);
             }
-            else if (_arrows[count - 4].ArrowType == Arrow.Type.Right &&
-                _arrows[count - 3].ArrowType == Arrow.Type.Left &&
-                _arrows[count - 2].ArrowType == Arrow.Type.Left &&
-                _arrows[count - 1].ArrowType == Arrow.Type.Right)
+            else if (_arrows[count - 4].ArrowType.Value == Arrow.Type.Right &&
+                _arrows[count - 3].ArrowType.Value == Arrow.Type.Left &&
+                _arrows[count - 2].ArrowType.Value == Arrow.Type.Left &&
+                _arrows[count - 1].ArrowType.Value == Arrow.Type.Right)
             {
                 if (NextArrowManager == null)
                     GenerateNextArrowManager();
                 for (var i = 1; i <= 4; i++)
                 {
-                    _arrows[count - i].GetComponentInChildren<Renderer>().material.color = Color.green;
+                    SetColorChildrenObjects(_arrows[count - i].gameObject, Color.green);
                 }
                 NextArrowManager.Generate(Arrow.Type.Right);
             }
@@ -71,7 +71,7 @@ public class ArrowManager : MonoBehaviour
             {
                 for (var i = 1; i <= 4; i++)
                 {
-                    _arrows[count - i].GetComponentInChildren<Renderer>().material.color = Color.red;
+                    SetColorChildrenObjects(_arrows[count - i].gameObject, Color.red);
                 }
             }
         }
@@ -103,5 +103,14 @@ public class ArrowManager : MonoBehaviour
         newParentObject.transform.position = ArrowParentGameObject.transform.position + _addPositionVector3;
         arrowManager.ArrowParentGameObject = newParentObject;
         NextArrowManager = arrowManager;
+    }
+
+    private void SetColorChildrenObjects(GameObject obj, Color color)
+    {
+        var renderers = obj.GetComponentsInChildren<Renderer>();
+        foreach (var rend in renderers)
+        {
+            rend.material.color = color;
+        }
     }
 }
